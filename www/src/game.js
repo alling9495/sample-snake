@@ -48,25 +48,17 @@ var SnakeLayer = cc.Layer.extend({
                 var targ = event.getCurrentTarget();   
                 /* Direction enums */
                 var up = 1, down = -1, left = -2, right = 2;
-                /* Key codes, respectively. */
-                var w = 87, s = 83, a = 65, d = 68;
-        
+                /* Object with keys being keycodes mapped to a direction */            
+                var keyMap = {};
+                keyMap[87] = up; // w
+                keyMap[83] = down; // s
+                keyMap[65] = left; // a
+                keyMap[68] = right; // d
+                                
                 /* Processes key strokes */
-                switch (keyCode) {
-                    case w: // w
-                        targ.curDir = up;
-                        break;  
-                    case s: // s
-                        targ.curDir = down;
-                        break;
-                    case a: // a
-                        targ.curDir = left;
-                        break;  
-                    case d: // d  
-                        targ.curDir = right;
-                        break;                                              
-                }
-                
+                if (keyMap[keyCode] !== undefined) {
+                    targ.curDir = keyMap[keyCode];
+                }                           
             }            
         }, this);
         
@@ -99,8 +91,8 @@ var SnakeLayer = cc.Layer.extend({
         
         /* Add in biscuit */
         this.updateBiscuit();
-        this.biscuit.x = 0;
-        this.biscuit.y = winSize.width / 2;
+        //this.biscuit.x = 0;
+        //this.biscuit.y = winSize.width / 2;
         
         /* Schedule update */
         this.scheduleUpdate();
@@ -111,22 +103,17 @@ var SnakeLayer = cc.Layer.extend({
             step = 20;
         var snakeHead = this.snakeParts[0];
         
-        /* Move head in a direction */
-        switch(dir) {
-            case up:
-                snakeHead.move(snakeHead.x, snakeHead.y + step);
-                break;
-            case down:
-                snakeHead.move(snakeHead.x, snakeHead.y - step);
-                break;
-            case left:
-                snakeHead.move(snakeHead.x - step, snakeHead.y);
-                break;
-            case right:
-                snakeHead.move(snakeHead.x + step, snakeHead.y);
-                break;
+        /* Map of direction to appropriate movement code */
+        var dirMap = {};
+        dirMap[up] = function() {snakeHead.move(snakeHead.x, snakeHead.y + step);};
+        dirMap[down] = function() {snakeHead.move(snakeHead.x, snakeHead.y - step);};
+        dirMap[left] = function() {snakeHead.move(snakeHead.x - step, snakeHead.y);};
+        dirMap[right] = function() {snakeHead.move(snakeHead.x + step, snakeHead.y);};
+                
+        /* Move head in a direction */    
+        if (dirMap[dir] !== undefined) {
+            dirMap[dir]();
         }
-        
         /* Save previous position of head for next part */
         var prevX = snakeHead.prevX;
         var prevY = snakeHead.prevY;
