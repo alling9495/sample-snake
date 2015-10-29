@@ -24,8 +24,8 @@ var Biscuit = cc.Sprite.extend({
                              
         /* The possible positions themselves */
         var possible = {
-             x: randNum(range.x) * step,
-             y: randNum(range.y) * step
+             x: (randNum(range.x) + 1) * step,
+             y: (randNum(range.y) + 1) * step
         }                  
                 
         var flag = true;

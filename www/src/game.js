@@ -189,7 +189,7 @@ var SnakeLayer = cc.Layer.extend({
     },
 	update: function(dt) {
         /* Movement enum */
-        var up = 1;
+        var up = 1;        
         /* Only move if interval has elasped */
         if (this.counter < this.interval) {
             this.counter += dt;   
@@ -199,7 +199,9 @@ var SnakeLayer = cc.Layer.extend({
             this.moveSnake(this.curDir);                        
             /* Check if head has collided the border, body or the biscuit */
             this.checkCollision();            
-        }		
+        }
+        
+        this.addChild(new Biscuit(this.snakeParts));
 	}    
 });
 
