@@ -98,7 +98,7 @@ var SnakeLayer = cc.Layer.extend({
         /* Schedule update */
         this.scheduleUpdate();
     },    
-    moveSnake: function(dir) {
+    moveSnake: function() {
         /* Movement enums and constants */
         var up = 1, down = -1, left = -2, right = 2,
             step = 20;
@@ -113,14 +113,19 @@ var SnakeLayer = cc.Layer.extend({
                 
         
         /* Change current direction if it isn't the opposite direction or there is only the Snake head */
-        if ((dir * -1) != this.curDir || this.snakeParts.length == 1)  {            
-            this.curDir = dir;
-        } 
+        if ((this.nextDir * -1) != this.curDir || this.snakeParts.length == 1)  {            
+            this.curDir = this.nextDir;
+        }
         
         /* Move head in current direction */    
         if (dirMap[this.curDir] !== undefined) {
             dirMap[this.curDir]();    
         }
+        
+        /* Move head in current direction */
+        /*if (dirMap[dir] !== undefined) {
+            dirMap[dir]();
+        }*/
         
         /* Save previous position of head for next part */
         var prevX = snakeHead.prevX;
@@ -204,7 +209,7 @@ var SnakeLayer = cc.Layer.extend({
         } else {
             this.counter = 0;
             /* Move snake */
-            this.moveSnake(this.nextDir);                        
+            this.moveSnake();                        
             /* Check if head has collided the border, body or the biscuit */
             this.checkCollision();            
         }
