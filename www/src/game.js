@@ -17,9 +17,10 @@ var SnakePart = cc.Sprite.extend({
 
 var SnakeLayer = cc.Layer.extend({
     snakeParts: null,
-    interval: 0.20, /* 1 second */
+    interval: 0.1, /* 1 second */
     counter: this.interval,
     curDir: 0,
+    nextDir: 0,
     biscuit: null,
     ctor: function () {
         /* Acquire window size */
@@ -57,7 +58,7 @@ var SnakeLayer = cc.Layer.extend({
                                 
                 /* Processes key strokes */
                 if (keyMap[keyCode] !== undefined) {
-                    targ.curDir = keyMap[keyCode];
+                    targ.nextDir = keyMap[keyCode];
                 }                           
             }            
         }, this);
@@ -80,10 +81,10 @@ var SnakeLayer = cc.Layer.extend({
                 if (delta.x !== 0 && delta.y !== 0) {
                     if (Math.abs(delta.x) > Math.abs(delta.y)) {                    
                         /* Determine the direction via sign */
-                        targ.curDir = Math.sign(delta.x) * right;                        
+                        targ.nextDir = Math.sign(delta.x) * right;                        
                     } else if (Math.abs(delta.x) < Math.abs(delta.y)) {
                         /* Determine the direction via sign */
-                        targ.curDir = Math.sign(delta.y) * up;                        
+                        targ.nextDir = Math.sign(delta.y) * up;                        
                     }                            
                 }            
             }                    
@@ -110,10 +111,17 @@ var SnakeLayer = cc.Layer.extend({
         dirMap[left] = function() {snakeHead.move(snakeHead.x - step, snakeHead.y);};
         dirMap[right] = function() {snakeHead.move(snakeHead.x + step, snakeHead.y);};
                 
-        /* Move head in a direction */    
-        if (dirMap[dir] !== undefined) {
-            dirMap[dir]();
+        
+        /* Change current direction if it isn't the opposite direction or there is only the Snake head */
+        if ((dir * -1) != this.curDir || this.snakeParts.length == 1)  {            
+            this.curDir = dir;
+        } 
+        
+        /* Move head in current direction */    
+        if (dirMap[this.curDir] !== undefined) {
+            dirMap[this.curDir]();    
         }
+        
         /* Save previous position of head for next part */
         var prevX = snakeHead.prevX;
         var prevY = snakeHead.prevY;
@@ -196,12 +204,10 @@ var SnakeLayer = cc.Layer.extend({
         } else {
             this.counter = 0;
             /* Move snake */
-            this.moveSnake(this.curDir);                        
+            this.moveSnake(this.nextDir);                        
             /* Check if head has collided the border, body or the biscuit */
             this.checkCollision();            
         }
-        
-        this.addChild(new Biscuit(this.snakeParts));
 	}    
 });
 
