@@ -17,7 +17,7 @@ var SnakePart = cc.Sprite.extend({
 
 var SnakeLayer = cc.Layer.extend({
     snakeParts: null,
-    interval: 0.1, /* 1 second */
+    interval: 0.15, /* 1 second */
     counter: this.interval,
     curDir: 0,
     nextDir: 0,
@@ -55,11 +55,22 @@ var SnakeLayer = cc.Layer.extend({
                 keyMap[83] = down; // s
                 keyMap[65] = left; // a
                 keyMap[68] = right; // d
+                
+                var debugKeyMap = {};
+                debugKeyMap[49] = 0.15;
+                debugKeyMap[50] = 0.10;
+                debugKeyMap[51] = 0.05;
+                debugKeyMap[52] = 0.03;
+                debugKeyMap[53] = 0.01;
                                 
                 /* Processes key strokes */
                 if (keyMap[keyCode] !== undefined) {
                     targ.nextDir = keyMap[keyCode];
                 }                           
+                
+                if (debugKeyMap[keyCode] !== undefined) {
+                    targ.interval = debugKeyMap[keyCode];
+                }
             }            
         }, this);
         
@@ -92,6 +103,8 @@ var SnakeLayer = cc.Layer.extend({
         
         /* Add in biscuit */
         this.updateBiscuit();
+        /* Initialize difficulty */
+        this.updateDifficulty();
         //this.biscuit.x = 0;
         //this.biscuit.y = winSize.width / 2;
         
@@ -189,16 +202,38 @@ var SnakeLayer = cc.Layer.extend({
         for (var part = 1; part < body.length; part++) {
             if (head.x == body[part].x && head.y == body[part].y) {
                 /* Run GameOver Scene */
-                this.snakeParts = null;
+                //this.snakeParts = null;
+                cc.director.runScene(new GameOverScene(this.parent.score_layer.score));
             }
         }    
         
         /* Check collision with biscuit */
         if (head.x == this.biscuit.x && head.y == this.biscuit.y) {
+            /* Increase score */
+            this.parent.score_layer.scoreIncrease();
+            /* Update biscuit */
             this.updateBiscuit();
+            /* Increase length of snake */
             this.addPart();
+            /* Increases difficulty if at appropriate score */
+            this.updateDifficulty(this.parent.score_layer.score);
         }
                 
+    },
+    updateDifficulty: function(curScore) {
+        var scoreToDiff = {};
+        
+        /* Define each level of difficulty in terms of score to interval */
+        scoreToDiff[0] = 0.15;
+        scoreToDiff[5] = 0.10;
+        scoreToDiff[15] = 0.05;
+        scoreToDiff[25] = 0.03;
+        scoreToDiff[35] = 0.01;
+        
+        /* Update interval */
+        if (scoreToDiff[curScore] !== undefined) {
+            this.interval = scoreToDiff[curScore];
+        }        
     },
 	update: function(dt) {
         /* Movement enum */
@@ -220,7 +255,10 @@ var GameScene = cc.Scene.extend({
     snake_layer: {},
     onEnter:function () {
         this._super();
+        this.score_layer = new ScoreLayer();
         this.snake_layer = new SnakeLayer();
+        
+        this.addChild(this.score_layer, 1);
         this.addChild(this.snake_layer, 0);        
     }
 });

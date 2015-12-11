@@ -13,6 +13,9 @@
     "jsList" : [
         "src/resource.js",
         "src/biscuit.js",
-        "src/game.js"
+        "src/gameOver.js",
+        "src/score.js",
+        "src/menu.js",
+        "src/game.js"        
     ]
 }
