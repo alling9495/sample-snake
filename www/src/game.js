@@ -105,8 +105,6 @@ var SnakeLayer = cc.Layer.extend({
         this.updateBiscuit();
         /* Initialize difficulty */
         this.updateDifficulty();
-        //this.biscuit.x = 0;
-        //this.biscuit.y = winSize.width / 2;
         
         /* Schedule update */
         this.scheduleUpdate();
