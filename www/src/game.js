@@ -85,10 +85,10 @@ var SnakeLayer = cc.Layer.extend({
                 var targ = event.getCurrentTarget();
                 var up = 1, down = -1, left = -2, right = 2;
             
-                /* Get the movement delta */
+                /* Get the movement distance */ 
                 var delta = touch.getDelta();
                 
-                /* If there is no change */
+                /* If a touch moved a distance */
                 if (delta.x !== 0 && delta.y !== 0) {
                     if (Math.abs(delta.x) > Math.abs(delta.y)) {                    
                         /* Determine the direction via sign */
@@ -98,6 +98,7 @@ var SnakeLayer = cc.Layer.extend({
                         targ.nextDir = Math.sign(delta.y) * up;                        
                     }                            
                 }            
+                /* Otherwise, if the touch moved no distance do nothing */
             }                    
         }, this);
         
@@ -251,6 +252,7 @@ var SnakeLayer = cc.Layer.extend({
 
 var GameScene = cc.Scene.extend({
     snake_layer: {},
+    score_layer: {},
     onEnter:function () {
         this._super();
         this.score_layer = new ScoreLayer();

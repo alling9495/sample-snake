@@ -1,6 +1,8 @@
 var GameOverScene = cc.Scene.extend({
     finalScore: 0,
     labelGameOver: {},
+    labelScore: {},
+    labelPrompt: {},
     ctor: function(score) {
         this._super();
         this.finalScore = score;

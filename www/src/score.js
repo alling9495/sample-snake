@@ -1,6 +1,6 @@
 var ScoreLayer = cc.Layer.extend({
     score: 0,
-    labelScore: 0,
+    labelScore: null,
     ctor: function() {
         /* Call super constructor */
         this._super();
